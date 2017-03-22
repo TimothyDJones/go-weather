@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	// "fmt"
 	"encoding/json"
 	"net/http"
 	"strings"
@@ -17,11 +17,11 @@ func main() {
 
 			data, err := query(city)
 			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServiceError)
+				http.Error(w, err.Error(), http.StatusInternalServerError)
 				return
 			}
 
-			w.Header.Set("Content-Type", "application/json; charset=utf-8")
+			w.Header().Set("Content-Type", "application/json; charset=utf-8")
 			json.NewEncoder(w).Encode(data)
 		})
 	
@@ -35,7 +35,7 @@ func hello(w http.ResponseWriter, r *http.Request) {
 func query(city string) (weatherData, error) {
 	apiConfig, err := loadApiConfig(".apiConfig")
 	if err != nil {
-		return apiConfigData{}, err
+		return weatherData{}, err
 	}
 
 	resp, err := http.Get("http://api.openweathermap.org/data/2.5/weather?APPID=" + apiConfig.OpenWeatherMapApiKey + "&q=" + city)
@@ -54,7 +54,7 @@ func query(city string) (weatherData, error) {
 	return d, nil
 }
 
-func loadApiConfig(filename string) (apiConfigData, err) {
+func loadApiConfig(filename string) (apiConfigData, error) {
 	bytes, err := ioutil.ReadFile(filename)
 
 	if err != nil {
