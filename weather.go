@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"strings"
-	"ioutil"
+	"io/ioutil"
 )
 
 func main() {
