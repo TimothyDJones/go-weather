@@ -29,7 +29,7 @@ func main() {
 }
 
 func hello(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Hello from Go!\n")
+	w.Write([]byte("Hello from Go!\n"))
 }
 
 func query(city string) (weatherData, error) {
