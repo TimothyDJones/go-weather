@@ -115,3 +115,36 @@ func (w openWeatherMap) temperature(city string) (float64, error) {
 	log.Printf("openWeatherMap: %s: %.2f", city, d.Main.Kelvin)
 	return d.Main.Kelvin, nil
 }
+
+type weatherUnderground struct {
+	apiKey string
+}
+
+func (w weatherUnderground) temperature(city string) (float64, error) {
+	apiConfig, err := loadApiConfig(".apiConfig")
+	if err != nil {
+		return 0, err
+	}
+	w.apiKey := apiConfig.WundergroundApiKey
+
+	resp, err := http.Get("http://api.wunderground.com/api/" + w.apiKey + "/conditions/q/" + city + ".json")
+	if err != nil {
+		return 0, err
+	}
+
+	defer resp.Body.Close()
+
+	var d struct {
+		Observation struct {
+			Celsius float64 `json:"temp_c"`
+		} `json:"current_observation"`
+	}
+
+	if err := json.NewDecoder(resp.Body).Decode(&d); err != nil {
+		return 0, err
+	}
+
+	kelvin := d.Observation.Celsius + 273.15
+	log.Printf("wunderGround: %s: %.2f", city, kelvin)
+	return kelvin, nil
+}
