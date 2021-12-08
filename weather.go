@@ -3,10 +3,10 @@ package main
 import (
 	// "fmt"
 	"encoding/json"
-	"net/http"
-	"strings"
 	"io/ioutil"
 	"log"
+	"net/http"
+	"strings"
 )
 
 func main() {
@@ -25,7 +25,7 @@ func main() {
 			w.Header().Set("Content-Type", "application/json; charset=utf-8")
 			json.NewEncoder(w).Encode(data)
 		})
-	
+
 	http.ListenAndServe(":8080", nil)
 }
 
@@ -59,13 +59,13 @@ func loadApiConfig(filename string) (apiConfigData, error) {
 	bytes, err := ioutil.ReadFile(filename)
 
 	if err != nil {
-		return apiConfigData {}, err
+		return apiConfigData{}, err
 	}
 
 	var c apiConfigData
 	err = json.Unmarshal(bytes, &c)
 	if err != nil {
-		return apiConfigData {}, err
+		return apiConfigData{}, err
 	}
 
 	return c, nil
@@ -80,14 +80,14 @@ type weatherData struct {
 
 type apiConfigData struct {
 	OpenWeatherMapApiKey string `json:"OpenWeatherMapApiKey"`
-	WundergroundApiKey string `json:"WundergroundApiKey"`
+	WundergroundApiKey   string `json:"WundergroundApiKey"`
 }
 
 type weatherProvider interface {
-	temperature(city string) (float64, error)  // temperature in Kelvin!
+	temperature(city string) (float64, error) // temperature in Kelvin!
 }
 
-type openWeatherMap struct {}
+type openWeatherMap struct{}
 
 func (w openWeatherMap) temperature(city string) (float64, error) {
 	apiConfig, err := loadApiConfig(".apiConfig")
@@ -125,7 +125,7 @@ func (w weatherUnderground) temperature(city string) (float64, error) {
 	if err != nil {
 		return 0, err
 	}
-	w.apiKey := apiConfig.WundergroundApiKey
+	w.apiKey = apiConfig.WundergroundApiKey
 
 	resp, err := http.Get("http://api.wunderground.com/api/" + w.apiKey + "/conditions/q/" + city + ".json")
 	if err != nil {
